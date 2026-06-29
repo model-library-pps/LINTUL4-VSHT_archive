@@ -1,0 +1,30 @@
+* This file was intentionally removed of
+* comment lines and indentation
+      SUBROUTINE AMBUSY (ITASK,MODULE,ICODE)
+      IMPLICIT NONE
+      INTEGER ITASK,ICODE
+      CHARACTER*(*) MODULE
+      INTEGER IFINDC,IFND,ILMAX,IN,ISTORE
+      CHARACTER*6 MODLIS,LMODNM
+      PARAMETER (ILMAX=10)
+      DIMENSION ISTORE(0:ILMAX),MODLIS(ILMAX)
+      SAVE
+      DATA ISTORE/0,ILMAX*0/,IN/0/
+      CALL UPPERC (MODULE)
+      LMODNM = MODULE
+      IFND   = IFINDC (MODLIS,ILMAX,1,IN,LMODNM)
+      IF (ITASK.EQ.1) THEN
+      IF (IFND.EQ.0) THEN
+      IN = IN + 1
+      IF (IN.GT.ILMAX) CALL FATALERR ('AMBUSY','too many names')
+      MODLIS(IN) = LMODNM
+      IFND = IN
+      END IF
+      ISTORE(IFND) = ICODE
+      ELSE IF (ITASK.EQ.2) THEN
+      ICODE = ISTORE (IFND)
+      ELSE
+      CALL FATALERR ('AMBUSY','illegal ITASK value')
+      END IF
+      RETURN
+      END

@@ -1,0 +1,38 @@
+**
+** Management data file for use with LINTUL model, May 2011
+**
+** Management type ??
+
+
+** Fertiliser N application 
+FERTAB  =   0.,    0.0,  !  kg N/ha
+            99.,   0.0,  ! as function of day number
+            132.,  0.0, 
+            133.,120.0,
+            134.,  0.0,
+            172.,  0.0,
+            173., 40.0,
+            174.,  0.0,
+            175.,  0.0
+
+** Recovery fraction of applied fertiliser N
+NRFTAB  =     0.,  0.70,  !  kg N uptake by the crop per kg fertilser-N applied
+             200., 0.70   !  as function of day number
+
+
+* Soil N mineralization
+NMINS   =    30.  !  total mineral soil N available at start of growth period [kg N/ha]
+RTMINS  =   0.025  ! fraction of soil mineral coming available per day [day-1]
+
+* irrigation water applied 
+IRRTAB   =   0., 0.0,  !  irrigation water applied per day [cm]
+             164.,0.0, !  as function of day number
+             165.,2.0,
+             166.,0.0,
+             200.,0.0,
+             201.,2.0,
+             202.,0.0,
+             220.,0.0,
+             221.,2.0,
+             222.,0.0,
+             365.,0.0 

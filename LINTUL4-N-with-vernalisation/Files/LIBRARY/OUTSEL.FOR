@@ -1,0 +1,26 @@
+** $Id: outsel.for 1.1 1997/10/02 16:08:12 LEM release $
+* This file was intentionally removed of
+* comment lines and indentation
+      SUBROUTINE OUTSEL (PRSEL,IMNPRS,INPRS,IPFORM,MESSAG)
+      IMPLICIT NONE
+      INTEGER IMNPRS,INPRS,IPFORM
+      CHARACTER*(*) PRSEL,MESSAG
+      DIMENSION PRSEL(IMNPRS)
+      INTEGER IPRS
+      LOGICAL TABGEN
+      SAVE
+      IF (.NOT.((IPFORM.GE. 4 .AND. IPFORM.LE. 6) .OR.
+     $(IPFORM.GE.14 .AND. IPFORM.LE.16)) )
+     $CALL FATALERR ('OUTSEL','Illegal value of IPFORM')
+      IF (INPRS.GT.IMNPRS) CALL FATALERR
+     $('OUTSEL','illegal value INPRS')
+      TABGEN = .FALSE.
+      DO 10 IPRS=0,INPRS
+      IF (IPRS.GT.0) THEN
+      TABGEN = PRSEL(IPRS).EQ.'<TABLE>'
+      IF (.NOT.TABGEN) CALL OUTDAT (3,0,PRSEL(IPRS),0.0)
+      END IF
+      IF (TABGEN.OR.IPRS.EQ.INPRS) CALL OUTDAT (IPFORM,0,MESSAG ,0.)
+10    CONTINUE
+      RETURN
+      END

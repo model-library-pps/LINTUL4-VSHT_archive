@@ -1,0 +1,197 @@
+** $Id: recread.for 1.1 1997/10/02 16:08:14 LEM release $
+* This file was intentionally removed of
+* comment lines and indentation
+      BLOCK DATA RECREAD_DATA
+      IMPLICIT NONE
+*     declaration of file buffer
+      INTEGER F_BUF_DEC_LEN
+      PARAMETER (F_BUF_DEC_LEN=500)
+      CHARACTER*500 F_BUF
+ 
+      CHARACTER*1 CR,LF
+      INTEGER F_BUF_P,F_BUF_LEN,L_UNIT
+      LOGICAL LAST_BUF,L_EOF,INIT,FILE_CLOSED
+ 
+      COMMON /BUF_READ_COM1/ INIT,L_UNIT,F_BUF_P,F_BUF_LEN,
+     &                       LAST_BUF,L_EOF,FILE_CLOSED
+      COMMON /BUF_READ_COM2/ F_BUF,CR,LF
+      SAVE
+      DATA INIT /.FALSE./
+      END
+      SUBROUTINE RECREAD_INIT (UNIT,INPUT_FILE)
+      IMPLICIT NONE
+      CHARACTER*(*) INPUT_FILE
+      INTEGER UNIT
+*     declaration of file buffer
+      INTEGER F_BUF_DEC_LEN
+      PARAMETER (F_BUF_DEC_LEN=500)
+      CHARACTER*500 F_BUF
+ 
+      CHARACTER*1 CR,LF
+      INTEGER F_BUF_P,F_BUF_LEN,L_UNIT
+      LOGICAL LAST_BUF,L_EOF,INIT,FILE_CLOSED
+ 
+      COMMON /BUF_READ_COM1/ INIT,L_UNIT,F_BUF_P,F_BUF_LEN,
+     &                       LAST_BUF,L_EOF,FILE_CLOSED
+      COMMON /BUF_READ_COM2/ F_BUF,CR,LF
+      INTEGER ILEN, FILE_LEN
+      SAVE
+      L_UNIT = UNIT
+      CALL FOPENS (L_UNIT,INPUT_FILE,'RDO',' ')
+      CLOSE (L_UNIT)
+      FILE_LEN = ILEN (INPUT_FILE)
+      OPEN (UNIT=L_UNIT,FILE=INPUT_FILE(1:FILE_LEN),STATUS='OLD',
+     &ACCESS='SEQUENTIAL',FORM='BINARY')
+      F_BUF       = ' '
+      F_BUF_P     = F_BUF_DEC_LEN
+      F_BUF_LEN   = F_BUF_DEC_LEN
+      LAST_BUF    = .FALSE.
+      L_EOF       = .FALSE.
+      CR          = CHAR (13)
+      LF          = CHAR (10)
+      FILE_CLOSED = .FALSE.
+      INIT        = .TRUE.
+      RETURN
+      END
+      SUBROUTINE RECREAD_TERM
+      IMPLICIT NONE
+*     declaration of file buffer
+      INTEGER F_BUF_DEC_LEN
+      PARAMETER (F_BUF_DEC_LEN=500)
+      CHARACTER*500 F_BUF
+ 
+      CHARACTER*1 CR,LF
+      INTEGER F_BUF_P,F_BUF_LEN,L_UNIT
+      LOGICAL LAST_BUF,L_EOF,INIT,FILE_CLOSED
+ 
+      COMMON /BUF_READ_COM1/ INIT,L_UNIT,F_BUF_P,F_BUF_LEN,
+     &                       LAST_BUF,L_EOF,FILE_CLOSED
+      COMMON /BUF_READ_COM2/ F_BUF,CR,LF
+      SAVE
+      IF (.NOT.FILE_CLOSED) THEN
+      CLOSE (L_UNIT)
+      FILE_CLOSED = .TRUE.
+      END IF
+      RETURN
+      END
+      SUBROUTINE RECREAD (STBUF,RECLEN,STBLEN,EOF,IWAR)
+      IMPLICIT NONE
+      CHARACTER*(*) STBUF
+      LOGICAL EOF
+      INTEGER RECLEN,STBLEN,IWAR
+*     declaration of file buffer
+      INTEGER F_BUF_DEC_LEN
+      PARAMETER (F_BUF_DEC_LEN=500)
+      CHARACTER*500 F_BUF
+ 
+      CHARACTER*1 CR,LF
+      INTEGER F_BUF_P,F_BUF_LEN,L_UNIT
+      LOGICAL LAST_BUF,L_EOF,INIT,FILE_CLOSED
+ 
+      COMMON /BUF_READ_COM1/ INIT,L_UNIT,F_BUF_P,F_BUF_LEN,
+     &                       LAST_BUF,L_EOF,FILE_CLOSED
+      COMMON /BUF_READ_COM2/ F_BUF,CR,LF
+      LOGICAL FND_CR,SEC_PART
+      INTEGER ILEN,CR_POS,IOS,SLR,LR,TMPI1
+      SAVE
+      IF (.NOT.INIT) CALL FATALERR ('RECREAD','system not initialized')
+      FND_CR   = .FALSE.
+      EOF      = .FALSE.
+      STBLEN   = 0
+      IWAR     = 0
+      SEC_PART = .FALSE.
+      SLR = 0
+      LR = 0
+10    IF (.NOT.FND_CR.AND..NOT.L_EOF) THEN
+      F_BUF_P = F_BUF_P+1
+      IF (F_BUF_P.LE.F_BUF_LEN) THEN
+      IF (F_BUF(F_BUF_P:F_BUF_P).EQ.LF)
+     &F_BUF_P = F_BUF_P+1
+      END IF
+      IF (F_BUF_P.LE.F_BUF_LEN) THEN
+      CR_POS = INDEX (F_BUF(F_BUF_P:F_BUF_LEN),CR)
+      IF (CR_POS.GT.1) THEN
+      LR = LR+CR_POS-1
+      TMPI1 = ILEN (F_BUF(F_BUF_P:F_BUF_P+CR_POS-2))
+      IF (TMPI1.GT.0) SLR = LR-(CR_POS-TMPI1)+1
+      ELSE IF (CR_POS.EQ.0) THEN
+      LR = LR+F_BUF_LEN-F_BUF_P+1
+      TMPI1 = ILEN (F_BUF(F_BUF_P:F_BUF_LEN))
+      IF (TMPI1.GT.0) SLR = LR-(F_BUF_LEN-F_BUF_P-TMPI1)-1
+      END IF
+      IF (CR_POS.GT.0.AND..NOT.SEC_PART) THEN
+      FND_CR = .TRUE.
+      CR_POS = CR_POS-1
+      IF (CR_POS.LE.RECLEN) THEN
+      STBLEN = CR_POS
+      ELSE
+      STBLEN = RECLEN
+      END IF
+      IF (STBLEN.GT.0) THEN
+      STBUF   = F_BUF(F_BUF_P:F_BUF_P+STBLEN-1)
+      ELSE
+      STBUF = ' '
+      END IF
+      F_BUF_P = F_BUF_P+CR_POS
+      ELSE IF (CR_POS.EQ.0.AND..NOT.SEC_PART) THEN
+      FND_CR    = LAST_BUF
+      SEC_PART  = .TRUE.
+      IF (F_BUF_LEN-F_BUF_P+1.LE.RECLEN) THEN
+      STBLEN = F_BUF_LEN-F_BUF_P+1
+      ELSE
+      STBLEN = RECLEN
+      END IF
+      STBUF     = F_BUF(F_BUF_P:F_BUF_P+STBLEN-1)
+      F_BUF_P   = F_BUF_LEN
+      ELSE IF (SEC_PART) THEN
+      IF (CR_POS.GT.0) THEN
+      CR_POS   = CR_POS-1
+      FND_CR   = .TRUE.
+      SEC_PART = .FALSE.
+      ELSE
+      CR_POS   = F_BUF_LEN
+      FND_CR   = LAST_BUF
+      SEC_PART = .NOT.LAST_BUF
+      END IF
+      IF (CR_POS+STBLEN.LE.RECLEN) THEN
+      IF (CR_POS.GT.0) STBUF(STBLEN+1:STBLEN+CR_POS) =
+     &F_BUF(1:CR_POS)
+      STBLEN = STBLEN+CR_POS
+      ELSE IF (STBLEN.LT.RECLEN) THEN
+      STBUF(STBLEN+1:RECLEN) = F_BUF(1:RECLEN-STBLEN)
+      STBLEN = RECLEN
+      ELSE IF (STBLEN.GT.RECLEN) THEN
+      CALL FATALERR ('RECREAD','internal error')
+      END IF
+      F_BUF_P = CR_POS+1
+      END IF
+      ELSE
+      IF (.NOT.LAST_BUF) THEN
+      IOS   = 0
+      F_BUF = ' '
+      READ (L_UNIT,IOSTAT=IOS) F_BUF
+      F_BUF_P = 0
+      IF (IOS.NE.0) THEN
+      LAST_BUF  = .TRUE.
+      F_BUF_LEN = ILEN (F_BUF)
+      IF (F_BUF_LEN.EQ.0.AND.STBLEN.GT.0) FND_CR = .TRUE.
+      END IF
+      ELSE
+      CLOSE (L_UNIT)
+      FILE_CLOSED = .TRUE.
+      L_EOF       = .TRUE.
+      EOF         = .TRUE.
+      STBUF       = ' '
+      INIT        = .FALSE.
+      END IF
+      END IF
+      GOTO 10
+      END IF
+      IF (SLR.GT.RECLEN) THEN
+      IWAR = 1
+      STBLEN = RECLEN
+      ELSE
+      STBLEN = SLR
+      END IF
+      RETURN
+      END

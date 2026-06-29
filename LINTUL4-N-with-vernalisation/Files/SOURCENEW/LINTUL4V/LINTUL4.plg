@@ -1,0 +1,41 @@
+<html>
+<body>
+<pre>
+<h1>Build Log</h1>
+<h3>
+--------------------Configuration: LINTUL4 - Win32 Debug--------------------
+</h3>
+<h3>Command Lines</h3>
+Creating temporary file "C:\Users\wolf008\AppData\Local\Temp\RSP7A61.tmp" with contents
+[
+/check:bounds /compile_only /dbglibs /debug:full /nologo /traceback /warn:argument_checking /warn:nofileopt /module:"Debug/" /object:"Debug/" /pdbfile:"Debug/DF60.PDB" 
+"N:\Seamless\Joost\AGMIP-model comparison action\LINTUL versions\LINTUL4-N-new\SOURCENEW\WATBALS.FOR"
+]
+Creating temporary file "C:\Users\wolf008\AppData\Local\Temp\RSP7A62.tmp" with contents
+[
+kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug/LINTUL4.pdb" /debug /machine:I386 /out:"Debug/LINTUL4.exe" /pdbtype:sept 
+".\Debug\CROPP.OBJ"
+".\Debug\DAILOUT.OBJ"
+".\Debug\INITP.OBJ"
+".\Debug\LINTUL4.OBJ"
+".\Debug\LINTULSUB.OBJ"
+".\Debug\STOUT.OBJ"
+".\Debug\SWEAF.OBJ"
+".\Debug\TIMER.OBJ"
+".\Debug\WATBALS.OBJ"
+".\Debug\WEATHR.OBJ"
+"..\..\LIBRARY\LIBPOTATO\LIBPOTAT\Debug\LIBPOTAT.lib"
+]
+Creating command line "link.exe @C:\Users\wolf008\AppData\Local\Temp\RSP7A62.tmp"
+<h3>Output Window</h3>
+Compiling Fortran...
+N:\Seamless\Joost\AGMIP-model comparison action\LINTUL versions\LINTUL4-N-new\SOURCENEW\WATBALS.FOR
+Linking...
+
+
+
+<h3>Results</h3>
+LINTUL4.exe - 0 error(s), 0 warning(s)
+</pre>
+</body>
+</html>
