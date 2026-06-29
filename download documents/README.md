@@ -5,4 +5,4 @@
 [Literature heat stress wheat](https://github.com/model-library-pps/LINTUL4-VSHT_archive/tree/main/download%20documents/background%20information/Literature%20Heat%20stress%20wheat)
 
 **User guide**\
-[Wolf, 2012](https://github.com/model-library-pps/LINTUL4-VSHT_archive/blob/main/download%20documents/LINTUL4-report-vs1.doc)
+[Wolf (2012)](https://github.com/model-library-pps/LINTUL4-VSHT_archive/blob/main/download%20documents/LINTUL4-report-vs1.doc)
